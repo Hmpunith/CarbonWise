@@ -74,7 +74,6 @@ function App() {
       });
       await signInWithGoogle();
     } catch (err) {
-      console.error('[App] Google Sign-In Error:', err);
       setStatusMessage(`Sign-in failed: ${err.message}`);
       setToast({
         type: 'error',
@@ -99,7 +98,6 @@ function App() {
         message: 'Successfully signed out.',
       });
     } catch (err) {
-      console.error('[App] Sign-Out Error:', err);
       setStatusMessage('Sign-out failed.');
       setToast({
         type: 'error',
