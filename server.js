@@ -47,6 +47,7 @@ import {
   apiRateLimiter,
   requestIdMiddleware,
   inputSanitizer,
+  enforceJsonContentType,
   compression,
 } from './server/middleware.js';
 import apiRoutes from './server/routes.js';
@@ -65,6 +66,7 @@ app.use(compression());
 app.use(corsMiddleware());
 app.use(express.json({ limit: config.inputLimits.bodyMaxSize }));
 app.use(requestIdMiddleware);
+app.use(enforceJsonContentType);
 app.use(inputSanitizer);
 
 // ── API Routes (rate-limited) ──────────────────────────────────────────────

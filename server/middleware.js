@@ -136,4 +136,23 @@ export function inputSanitizer(req, res, next) {
   next();
 }
 
+/**
+ * Enforces Content-Type: application/json on POST, PUT, and PATCH requests.
+ * Rejects requests with missing or incorrect Content-Type headers.
+ *
+ * @param {import('express').Request} req - Express request
+ * @param {import('express').Response} res - Express response
+ * @param {Function} next - Express next function
+ */
+export function enforceJsonContentType(req, res, next) {
+  const methodsRequiringBody = ['POST', 'PUT', 'PATCH'];
+  if (methodsRequiringBody.includes(req.method) && !req.is('application/json')) {
+    return res.status(415).json({
+      error: 'Unsupported Media Type. Content-Type must be application/json.',
+      code: 'UNSUPPORTED_MEDIA_TYPE',
+    });
+  }
+  next();
+}
+
 export { compressionMiddleware as compression };
