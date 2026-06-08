@@ -139,7 +139,7 @@ const Tracker = () => {
       aria-labelledby="tab-tracker"
       aria-busy={loading || saving}
     >
-      <h2 className="section-title">📊 Activity Tracker</h2>
+      <h2 className="section-title">Activity Tracker</h2>
       <p className="section-subtitle">
         Log your daily activities to build a personal carbon profile.
       </p>

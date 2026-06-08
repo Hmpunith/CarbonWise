@@ -90,7 +90,7 @@ const Actions = () => {
       aria-labelledby="tab-actions"
       aria-busy={loading}
     >
-      <h2 className="section-title">🌱 Eco Actions</h2>
+      <h2 className="section-title">Eco Actions</h2>
       <p className="section-subtitle">
         Discover practical steps to reduce your carbon footprint.
       </p>

@@ -102,7 +102,7 @@ const Calculator = () => {
       aria-labelledby="tab-calculator"
       aria-busy={loading}
     >
-      <h2 className="section-title">🧮 Carbon Calculator</h2>
+      <h2 className="section-title">Carbon Calculator</h2>
       <p className="section-subtitle">
         Describe your daily activities and get an AI-powered carbon estimate.
       </p>
@@ -238,7 +238,7 @@ const Calculator = () => {
           {/* Tips */}
           {result.tips && result.tips.length > 0 && (
             <div style={{ marginTop: 'var(--space-lg)' }}>
-              <h3 className="section-title" style={{ fontSize: 'var(--font-size-lg)' }}>💡 Tips to Reduce</h3>
+              <h3 className="section-title" style={{ fontSize: 'var(--font-size-lg)' }}>Tips to Reduce</h3>
               <div className="tips-list">
                 {result.tips.map((tip, i) => (
                   <div className="tip-item" key={i}>

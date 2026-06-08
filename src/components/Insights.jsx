@@ -76,7 +76,7 @@ const Insights = () => {
       aria-labelledby="tab-insights"
       aria-busy={loading}
     >
-      <h2 className="section-title">💡 Personalized Insights</h2>
+      <h2 className="section-title">Personalized Insights</h2>
       <p className="section-subtitle">
         Get AI-powered recommendations based on your tracked activities.
       </p>
@@ -90,7 +90,7 @@ const Insights = () => {
             onClick={handleGenerate}
             aria-label="Generate my personalized carbon insights"
           >
-            🔍 Generate My Insights
+            Generate My Insights
           </button>
           <p className="input-help" style={{ marginTop: 'var(--space-md)' }}>
             We'll analyse your tracked activities to provide tailored recommendations.
@@ -198,7 +198,7 @@ const Insights = () => {
               disabled={loading}
               aria-label="Regenerate personalized insights"
             >
-              🔄 Regenerate Insights
+              Regenerate Insights
             </button>
           </div>
         </>
