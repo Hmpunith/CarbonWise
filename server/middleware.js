@@ -26,9 +26,16 @@ export function securityHeaders() {
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://accounts.google.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        scriptSrc: ["'self'", "https://apis.google.com", "https://www.gstatic.com", "https://www.googletagmanager.com"],
+        scriptSrc: [
+          "'self'",
+          "https://apis.google.com",
+          "https://accounts.google.com",
+          "https://www.gstatic.com",
+          "https://www.googletagmanager.com",
+          "https://*.firebaseapp.com",
+        ],
         imgSrc: ["'self'", "data:", "https:", "https://www.gstatic.com", "https://lh3.googleusercontent.com"],
         connectSrc: [
           "'self'",
@@ -44,11 +51,14 @@ export function securityHeaders() {
           "https://www.googletagmanager.com",
           "https://*.google-analytics.com",
           "https://*.analytics.google.com",
+          "https://accounts.google.com",
         ],
         frameSrc: ["https://accounts.google.com", "https://*.firebaseapp.com"],
+        formActionSrc: ["'self'", "https://accounts.google.com"],
       },
     },
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
   });
 }
 

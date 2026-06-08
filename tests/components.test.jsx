@@ -231,3 +231,32 @@ describe('Calculator Panel', () => {
     expect(buttons.length).toBeGreaterThanOrEqual(1);
   });
 });
+
+// =====================================================================
+// 9. Toast Component
+// =====================================================================
+describe('Toast Component', () => {
+  let Toast;
+
+  beforeEach(async () => {
+    const mod = await import('../src/components/Toast.jsx');
+    Toast = mod.default;
+  });
+
+  it('renders with title and message', () => {
+    render(<Toast type="success" title="Success Title" message="Success Message" onClose={() => {}} />);
+    expect(screen.getByText('Success Title')).toBeInTheDocument();
+    expect(screen.getByText('Success Message')).toBeInTheDocument();
+  });
+
+  it('calls onClose after duration', () => {
+    vi.useFakeTimers();
+    const onClose = vi.fn();
+    render(<Toast type="info" title="Info" message="Info message" onClose={onClose} duration={3000} />);
+    
+    vi.advanceTimersByTime(3000);
+    expect(onClose).toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+});
+
