@@ -17,6 +17,7 @@ export default [
         Response: 'readonly',
         Request: 'readonly',
         fetch: 'readonly',
+        AbortController: 'readonly',
         document: 'readonly',
         window: 'readonly',
         navigator: 'readonly',

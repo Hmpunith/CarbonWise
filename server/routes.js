@@ -91,7 +91,7 @@ async function callGemini(systemInstruction, userPrompt, schema, cachePrefix) {
       let parsed;
       try {
         parsed = JSON.parse(text);
-      } catch (_parseErr) {
+      } catch {
         logger.warn('JSON parse failed, attempting cleanup');
         const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
         parsed = JSON.parse(cleaned);
