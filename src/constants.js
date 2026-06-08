@@ -172,10 +172,7 @@ export const IMPACT_LEVELS = [
  * @returns {ImpactLevel} The matching impact level object.
  */
 export const getImpactLevel = (kgCO2) => {
-  return (
-    IMPACT_LEVELS.find((level) => kgCO2 <= level.maxKg) ||
-    IMPACT_LEVELS[IMPACT_LEVELS.length - 1]
-  );
+  return IMPACT_LEVELS.find((level) => kgCO2 <= level.maxKg);
 };
 
 /**

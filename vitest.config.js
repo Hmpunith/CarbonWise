@@ -10,6 +10,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json-summary'],
+      include: ['server/constants.js', 'server/errors.js', 'server/schemas.js', 'server/prompts.js', 'src/constants.js'],
       thresholds: {},
     },
   },
