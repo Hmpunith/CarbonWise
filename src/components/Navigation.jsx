@@ -19,9 +19,10 @@ import { trackEvent } from '../firebase.js';
  * @param {Object.<string, number>} [props.counts={}] - Optional map of tab id → notification count to display badges.
  * @returns {JSX.Element}
  */
-const Navigation = ({ tabs, activeTab, onTabChange, counts = {} }) => {
+const Navigation = ({ tabs = [], activeTab = '', onTabChange, counts = {} }) => {
+  const safeTabs = Array.isArray(tabs) ? tabs : [];
   const tabRefs = useRef({});
-  const { onKeyDown } = useKeyboardNav(tabs, activeTab, onTabChange);
+  const { onKeyDown } = useKeyboardNav(safeTabs, activeTab, onTabChange);
 
   /**
    * Handles tab button click.
@@ -30,7 +31,7 @@ const Navigation = ({ tabs, activeTab, onTabChange, counts = {} }) => {
   const handleTabClick = useCallback(
     (tabId) => {
       trackEvent('tab_change', { tab: tabId });
-      onTabChange(tabId);
+      if (typeof onTabChange === 'function') onTabChange(tabId);
     },
     [onTabChange],
   );
@@ -48,7 +49,7 @@ const Navigation = ({ tabs, activeTab, onTabChange, counts = {} }) => {
       aria-label="Main navigation"
       onKeyDown={onKeyDown}
     >
-      {tabs.map((tab) => {
+      {safeTabs.map((tab) => {
         const isActive = tab.id === activeTab;
         const count = counts[tab.id] || 0;
         return (

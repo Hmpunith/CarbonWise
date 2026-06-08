@@ -12,6 +12,7 @@
  * @returns {JSX.Element}
  */
 const LoadingSpinner = ({ message = 'Loading, please wait' }) => {
+  const safeMessage = typeof message === 'string' ? message : 'Loading, please wait';
   return (
     <div
       className="spinner-container"
@@ -29,8 +30,8 @@ const LoadingSpinner = ({ message = 'Loading, please wait' }) => {
           <span className="eco-loader__dot eco-loader__dot--3" />
         </div>
       </div>
-      <span className="spinner-text">{message}</span>
-      <span className="sr-only">{message}</span>
+      <span className="spinner-text">{safeMessage}</span>
+      <span className="sr-only">{safeMessage}</span>
     </div>
   );
 };

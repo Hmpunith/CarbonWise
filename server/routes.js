@@ -15,6 +15,35 @@ import { ValidationError, AIServiceError } from './errors.js';
 import { generateCacheKey, getCached, setCache } from './cache.js';
 import { logger } from './logger.js';
 import config from './config.js';
+import { HTTP } from './constants.js';
+
+/**
+ * Validates that a required string field is present and non-empty.
+ * Throws a ValidationError if the field is missing, not a string, or empty.
+ *
+ * @param {*} value - The value to validate
+ * @param {string} fieldName - Human-readable field name for error messages
+ * @returns {string} The trimmed, validated string
+ * @throws {ValidationError} When validation fails
+ */
+function validateRequiredString(value, fieldName) {
+  if (!value || typeof value !== 'string' || value.trim().length === 0) {
+    throw new ValidationError(`${fieldName} is required and must be a non-empty string.`);
+  }
+  return value.trim();
+}
+
+/**
+ * Validates that the Gemini API key is configured.
+ * Throws an AIServiceError if the key is missing.
+ *
+ * @throws {AIServiceError} When the API key is not configured
+ */
+function validateApiKey() {
+  if (!config.gemini.apiKey) {
+    throw new AIServiceError('Gemini AI service is not configured. Please set the GEMINI_API_KEY environment variable.');
+  }
+}
 
 /** @type {express.Router} Express router for all API endpoints */
 const router = express.Router();
@@ -101,7 +130,7 @@ async function callGemini(systemInstruction, userPrompt, schema, cachePrefix) {
  */
 router.get('/health', (req, res) => {
   writeCloudLog('INFO', 'Health check', { requestId: req.requestId });
-  res.json({
+  res.status(HTTP.OK).json({
     status: 'healthy',
     service: 'carbonwise',
     timestamp: new Date().toISOString(),
@@ -122,15 +151,9 @@ router.get('/health', (req, res) => {
  */
 router.post('/calculate', async (req, res, next) => {
   try {
-    const { activity } = req.body;
+    const activity = validateRequiredString(req.body.activity, 'Activity description');
 
-    if (!activity || typeof activity !== 'string' || activity.trim().length === 0) {
-      throw new ValidationError('An activity description is required.');
-    }
-
-    if (!config.gemini.apiKey) {
-      throw new AIServiceError('Gemini service is not configured.');
-    }
+    validateApiKey();
 
     const result = await callGemini(
       CALCULATOR_INSTRUCTION,
@@ -139,7 +162,7 @@ router.post('/calculate', async (req, res, next) => {
       'calculate',
     );
 
-    res.json(result);
+    res.status(HTTP.OK).json(result);
     writeCloudLog('INFO', 'Carbon calculated', { requestId: req.requestId, category: result.category });
 
     // Async: Log calculation to BigQuery for analytics
@@ -168,15 +191,9 @@ router.post('/calculate', async (req, res, next) => {
  */
 router.post('/insights', async (req, res, next) => {
   try {
-    const { trackedData } = req.body;
+    const trackedData = validateRequiredString(req.body.trackedData, 'Tracked activity data');
 
-    if (!trackedData || typeof trackedData !== 'string' || trackedData.trim().length === 0) {
-      throw new ValidationError('Tracked activity data is required for insights.');
-    }
-
-    if (!config.gemini.apiKey) {
-      throw new AIServiceError('Gemini service is not configured.');
-    }
+    validateApiKey();
 
     const result = await callGemini(
       INSIGHTS_INSTRUCTION,
@@ -185,7 +202,7 @@ router.post('/insights', async (req, res, next) => {
       'insights',
     );
 
-    res.json(result);
+    res.status(HTTP.OK).json(result);
     writeCloudLog('INFO', 'Insights generated', { requestId: req.requestId, topSource: result.topSource });
   } catch (error) {
     next(error);
@@ -205,15 +222,9 @@ router.post('/insights', async (req, res, next) => {
  */
 router.post('/actions', async (req, res, next) => {
   try {
-    const { category } = req.body;
+    const category = validateRequiredString(req.body.category, 'Carbon category');
 
-    if (!category || typeof category !== 'string' || category.trim().length === 0) {
-      throw new ValidationError('A carbon category is required.');
-    }
-
-    if (!config.gemini.apiKey) {
-      throw new AIServiceError('Gemini service is not configured.');
-    }
+    validateApiKey();
 
     const result = await callGemini(
       ACTIONS_INSTRUCTION,
@@ -222,7 +233,7 @@ router.post('/actions', async (req, res, next) => {
       'actions',
     );
 
-    res.json(result);
+    res.status(HTTP.OK).json(result);
     writeCloudLog('INFO', 'Actions generated', { requestId: req.requestId, category });
   } catch (error) {
     next(error);
@@ -241,10 +252,10 @@ router.get('/stats', async (req, res) => {
   try {
     const stats = await getStatistics();
     writeCloudLog('INFO', 'Stats retrieved from BigQuery', { requestId: req.requestId });
-    res.json({ stats, source: 'BigQuery', requestId: req.requestId });
+    res.status(HTTP.OK).json({ stats, source: 'BigQuery', requestId: req.requestId });
   } catch (error) {
     reportError(error, { endpoint: '/api/stats', requestId: req.requestId });
-    res.json({ stats: [], source: 'BigQuery', note: 'BigQuery not configured in this environment' });
+    res.status(HTTP.OK).json({ stats: [], source: 'BigQuery', note: 'BigQuery not configured in this environment' });
   }
 });
 

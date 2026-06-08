@@ -1,9 +1,15 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import App from '../src/App.jsx';
 
 // ---------- helpers ----------
-const renderApp = () => render(<App />);
+const renderApp = async () => {
+  let result;
+  await act(async () => {
+    result = render(<App />);
+  });
+  return result;
+};
 
 // =====================================================================
 // 1. App Rendering
@@ -13,17 +19,17 @@ describe('App Component', () => {
     vi.clearAllMocks();
   });
 
-  it('renders without crashing', () => {
+  it('renders without crashing', async () => {
     // Arrange & Act
-    const { container } = renderApp();
+    const { container } = await renderApp();
 
     // Assert
     expect(container).toBeTruthy();
   });
 
-  it('renders Header with an h1 containing "CarbonWise"', () => {
+  it('renders Header with an h1 containing "CarbonWise"', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const heading = screen.getByRole('heading', { level: 1 });
@@ -31,31 +37,31 @@ describe('App Component', () => {
     expect(heading).toHaveTextContent(/carbonwise/i);
   });
 
-  it('renders Navigation with all 4 tabs', () => {
+  it('renders Navigation with all 5 tabs', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const tabs = screen.getAllByRole('tab');
-    expect(tabs).toHaveLength(4);
+    expect(tabs).toHaveLength(5);
   });
 
-  it('renders Footer with contentinfo role', () => {
+  it('renders Footer with contentinfo role', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const footer = screen.getByRole('contentinfo');
     expect(footer).toBeInTheDocument();
   });
 
-  it('has Calculator tab active by default', () => {
+  it('has Dashboard tab active by default', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
-    const calculatorTab = screen.getByRole('tab', { name: /calculator/i });
-    expect(calculatorTab).toHaveAttribute('aria-selected', 'true');
+    const dashboardTab = screen.getByRole('tab', { name: /dashboard/i });
+    expect(dashboardTab).toHaveAttribute('aria-selected', 'true');
   });
 });
 
@@ -67,39 +73,43 @@ describe('Tab Navigation', () => {
     vi.clearAllMocks();
   });
 
-  it('switches to Tracker panel when Tracker tab is clicked', () => {
-    // Arrange
-    renderApp();
+  it('switches to Tracker panel when Tracker tab is clicked', async () => {
+    await renderApp();
     const trackerTab = screen.getByRole('tab', { name: /tracker/i });
 
-    // Act
-    fireEvent.click(trackerTab);
+    await act(async () => {
+      fireEvent.click(trackerTab);
+    });
 
-    // Assert
-    expect(trackerTab).toHaveAttribute('aria-selected', 'true');
+    await waitFor(() => {
+      expect(trackerTab).toHaveAttribute('aria-selected', 'true');
+    });
     const trackerPanel = screen.getByRole('tabpanel');
     expect(trackerPanel).toBeInTheDocument();
   });
 
-  it('switches to Actions panel when Actions tab is clicked', () => {
-    // Arrange
-    renderApp();
+  it('switches to Actions panel when Actions tab is clicked', async () => {
+    await renderApp();
     const actionsTab = screen.getByRole('tab', { name: /actions/i });
 
-    // Act
-    fireEvent.click(actionsTab);
+    await act(async () => {
+      fireEvent.click(actionsTab);
+    });
 
-    // Assert
-    expect(actionsTab).toHaveAttribute('aria-selected', 'true');
+    await waitFor(() => {
+      expect(actionsTab).toHaveAttribute('aria-selected', 'true');
+    });
   });
 
-  it('switches to Insights panel when Insights tab is clicked', () => {
+  it('switches to Insights panel when Insights tab is clicked', async () => {
     // Arrange
-    renderApp();
+    await renderApp();
     const insightsTab = screen.getByRole('tab', { name: /insights/i });
 
     // Act
-    fireEvent.click(insightsTab);
+    await act(async () => {
+      fireEvent.click(insightsTab);
+    });
 
     // Assert
     expect(insightsTab).toHaveAttribute('aria-selected', 'true');
@@ -110,9 +120,9 @@ describe('Tab Navigation', () => {
 // 3. Header Auth State
 // =====================================================================
 describe('Header Auth State', () => {
-  it('shows a sign-in button when no user is authenticated', () => {
+  it('shows a sign-in button when no user is authenticated', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const signInBtn = screen.getByRole('button', { name: /sign in/i });
@@ -182,14 +192,14 @@ describe('ErrorBoundary Component', () => {
 // 6. Navigation Details
 // =====================================================================
 describe('Navigation Component', () => {
-  it('renders the correct number of tab elements (4)', () => {
+  it('renders the correct number of tab elements (5)', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const tablist = screen.getByRole('tablist');
     const tabs = within(tablist).getAllByRole('tab');
-    expect(tabs).toHaveLength(4);
+    expect(tabs).toHaveLength(5);
   });
 });
 
@@ -197,9 +207,9 @@ describe('Navigation Component', () => {
 // 7. Footer Details
 // =====================================================================
 describe('Footer Component', () => {
-  it('contains copyright text', () => {
+  it('contains copyright text', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const footer = screen.getByRole('contentinfo');
@@ -211,29 +221,75 @@ describe('Footer Component', () => {
 // 8. Calculator Panel
 // =====================================================================
 describe('Calculator Panel', () => {
-  it('renders a textarea input for activity description', () => {
+  it('renders a textarea input for activity description', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
+    const calcTab = screen.getByRole('tab', { name: /calculator/i });
+    await act(async () => {
+      fireEvent.click(calcTab);
+    });
 
     // Assert
-    const textarea = screen.getByRole('textbox');
-    expect(textarea).toBeInTheDocument();
+    await waitFor(() => {
+      const textarea = screen.getByRole('textbox');
+      expect(textarea).toBeInTheDocument();
+    });
   });
 
-  it('renders category buttons for carbon categories', () => {
+  it('renders category buttons for carbon categories', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
+    const calcTab = screen.getByRole('tab', { name: /calculator/i });
+    await act(async () => {
+      fireEvent.click(calcTab);
+    });
 
     // Assert
-    const buttons = screen.getAllByRole('button').filter(
-      (btn) => btn.closest('[data-testid="category-buttons"]') || btn.textContent.match(/transport|food|energy|shopping|waste/i)
-    );
-    expect(buttons.length).toBeGreaterThanOrEqual(1);
+    await waitFor(() => {
+      const buttons = screen.getAllByRole('button').filter(
+        (btn) => btn.closest('[data-testid="category-buttons"]') || btn.textContent.match(/transport|food|energy|shopping|waste/i)
+      );
+      expect(buttons.length).toBeGreaterThanOrEqual(1);
+    });
   });
 });
 
 // =====================================================================
-// 9. Toast Component
+// 9. Dashboard Panel
+// =====================================================================
+describe('Dashboard Panel', () => {
+  it('renders the dashboard as the default panel', async () => {
+    await renderApp();
+    const panel = screen.getByRole('tabpanel');
+    expect(panel).toHaveAttribute('id', 'panel-dashboard');
+  });
+
+  it('shows carbon dashboard heading', async () => {
+    await renderApp();
+    const heading = screen.getByRole('heading', { name: /your carbon dashboard/i });
+    expect(heading).toBeInTheDocument();
+  });
+
+  it('displays a Did You Know fact section', async () => {
+    await renderApp();
+    await waitFor(() => {
+      expect(screen.getByText(/did you know/i)).toBeInTheDocument();
+    });
+  });
+
+  it('shows navigation buttons to other tabs', async () => {
+    await renderApp();
+    await waitFor(() => {
+      expect(screen.getByText(/calculate footprint/i)).toBeInTheDocument();
+    });
+    expect(screen.getByText(/log activities/i)).toBeInTheDocument();
+    expect(screen.getByText(/explore actions/i)).toBeInTheDocument();
+    expect(screen.getByText(/get insights/i)).toBeInTheDocument();
+  });
+});
+
+// =====================================================================
+// 10. Toast Component
 // =====================================================================
 describe('Toast Component', () => {
   let Toast;
@@ -259,4 +315,3 @@ describe('Toast Component', () => {
     vi.useRealTimers();
   });
 });
-

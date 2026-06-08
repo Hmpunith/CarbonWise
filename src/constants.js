@@ -19,6 +19,12 @@
  */
 export const TABS = [
   {
+    id: 'dashboard',
+    label: 'Dashboard',
+    icon: '🏠',
+    ariaLabel: 'Carbon footprint dashboard overview',
+  },
+  {
     id: 'calculator',
     label: 'Calculator',
     icon: '🧮',

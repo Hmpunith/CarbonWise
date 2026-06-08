@@ -11,14 +11,14 @@ import {
 // TABS
 // =====================================================================
 describe('TABS Constant', () => {
-  it('has exactly 4 tab entries', () => {
-    // Arrange — constant already imported
+  it('has exactly 5 tab entries', () => {
+    // Arrange - constant already imported
 
     // Act
     const count = TABS.length;
 
     // Assert
-    expect(count).toBe(4);
+    expect(count).toBe(5);
   });
 
   it('every tab has id, label, icon, and ariaLabel properties', () => {

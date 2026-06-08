@@ -44,10 +44,15 @@ const Insights = () => {
 
     try {
       const activities = await getActivities(50);
+      if (!activities || activities.length === 0) {
+        setError('No tracked activities found. Please log some activities in the Tracker tab first.');
+        setLoading(false);
+        return;
+      }
       const response = await fetch(API_ENDPOINTS.insights, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ activities }),
+        body: JSON.stringify({ trackedData: JSON.stringify(activities) }),
       });
 
       if (!response.ok) {

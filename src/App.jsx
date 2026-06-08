@@ -16,6 +16,7 @@ import Calculator from './components/Calculator.jsx';
 import Tracker from './components/Tracker.jsx';
 import Actions from './components/Actions.jsx';
 import Insights from './components/Insights.jsx';
+import Dashboard from './components/Dashboard.jsx';
 import Toast from './components/Toast.jsx';
 import { TABS } from './constants.js';
 import { signInWithGoogle, signOutUser, onAuthChange, trackEvent } from './firebase.js';
@@ -27,7 +28,7 @@ import { signInWithGoogle, signOutUser, onAuthChange, trackEvent } from './fireb
  * @returns {JSX.Element} The complete CarbonWise application
  */
 function App() {
-  const [activeTab, setActiveTab] = useState('calculator');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [user, setUser] = useState(null);
   const [statusMessage, setStatusMessage] = useState('');
   const [toast, setToast] = useState(null);
@@ -115,6 +116,8 @@ function App() {
    */
   const renderActivePanel = () => {
     switch (activeTab) {
+      case 'dashboard':
+        return <Dashboard user={user} onNavigate={handleTabChange} />;
       case 'calculator':
         return <Calculator />;
       case 'tracker':
@@ -124,7 +127,7 @@ function App() {
       case 'insights':
         return <Insights user={user} />;
       default:
-        return <Calculator />;
+        return <Dashboard user={user} onNavigate={handleTabChange} />;
     }
   };
 

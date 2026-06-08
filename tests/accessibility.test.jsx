@@ -1,9 +1,15 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import App from '../src/App.jsx';
 
 // ---------- helpers ----------
-const renderApp = () => render(<App />);
+const renderApp = async () => {
+  let result;
+  await act(async () => {
+    result = render(<App />);
+  });
+  return result;
+};
 
 describe('WCAG Accessibility Compliance', () => {
   beforeEach(() => {
@@ -22,9 +28,9 @@ describe('WCAG Accessibility Compliance', () => {
     expect(document.documentElement.lang).toBe('en');
   });
 
-  it('has exactly one h1 element on the page', () => {
+  it('has exactly one h1 element on the page', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const headings = screen.getAllByRole('heading', { level: 1 });
@@ -34,9 +40,9 @@ describe('WCAG Accessibility Compliance', () => {
   // -----------------------------------------------------------------
   // 2. Skip navigation
   // -----------------------------------------------------------------
-  it('skip link exists with href="#main-content"', () => {
+  it('skip link exists with href="#main-content"', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const skipLink = document.querySelector('a[href="#main-content"]');
@@ -47,27 +53,27 @@ describe('WCAG Accessibility Compliance', () => {
   // -----------------------------------------------------------------
   // 3. Landmark regions
   // -----------------------------------------------------------------
-  it('main landmark has id="main-content"', () => {
+  it('main landmark has id="main-content"', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const main = screen.getByRole('main');
     expect(main).toHaveAttribute('id', 'main-content');
   });
 
-  it('header has role="banner"', () => {
+  it('header has role="banner"', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const banner = screen.getByRole('banner');
     expect(banner).toBeInTheDocument();
   });
 
-  it('footer has role="contentinfo"', () => {
+  it('footer has role="contentinfo"', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const footer = screen.getByRole('contentinfo');
@@ -77,30 +83,30 @@ describe('WCAG Accessibility Compliance', () => {
   // -----------------------------------------------------------------
   // 4. Tab widget ARIA
   // -----------------------------------------------------------------
-  it('navigation container has role="tablist"', () => {
+  it('navigation container has role="tablist"', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const tablist = screen.getByRole('tablist');
     expect(tablist).toBeInTheDocument();
   });
 
-  it('all navigation items have role="tab"', () => {
+  it('all navigation items have role="tab"', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const tabs = screen.getAllByRole('tab');
-    expect(tabs.length).toBeGreaterThanOrEqual(4);
+    expect(tabs.length).toBeGreaterThanOrEqual(5);
     tabs.forEach((tab) => {
       expect(tab).toHaveAttribute('role', 'tab');
     });
   });
 
-  it('active tab has aria-selected="true"', () => {
+  it('active tab has aria-selected="true"', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const tabs = screen.getAllByRole('tab');
@@ -110,35 +116,37 @@ describe('WCAG Accessibility Compliance', () => {
     expect(activeTabs).toHaveLength(1);
   });
 
-  it('inactive tabs have aria-selected="false"', () => {
+  it('inactive tabs have aria-selected="false"', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const tabs = screen.getAllByRole('tab');
     const inactiveTabs = tabs.filter(
       (tab) => tab.getAttribute('aria-selected') === 'false'
     );
-    // 4 tabs total, 1 active → 3 inactive
-    expect(inactiveTabs).toHaveLength(3);
+    // 5 tabs total, 1 active → 4 inactive
+    expect(inactiveTabs).toHaveLength(4);
   });
 
-  it('tab panels have role="tabpanel"', () => {
+  it('tab panels have role="tabpanel"', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
     // Assert
     const panels = screen.getAllByRole('tabpanel');
     expect(panels.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('status announcer has role="status" and aria-live="polite"', () => {
+  it('status announcer has role="status" and aria-live="polite"', async () => {
     // Arrange & Act
-    renderApp();
+    await renderApp();
 
-    // Assert
-    const status = screen.getByRole('status');
-    expect(status).toBeInTheDocument();
-    expect(status).toHaveAttribute('aria-live', 'polite');
+    // Assert — multiple status elements may exist (header announcer + loading spinner)
+    const statusElements = screen.getAllByRole('status');
+    expect(statusElements.length).toBeGreaterThanOrEqual(1);
+    const headerStatus = statusElements.find((el) => el.classList.contains('sr-only'));
+    expect(headerStatus).toBeTruthy();
+    expect(headerStatus).toHaveAttribute('aria-live', 'polite');
   });
 });

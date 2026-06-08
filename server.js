@@ -50,6 +50,7 @@ import {
   compression,
 } from './server/middleware.js';
 import apiRoutes from './server/routes.js';
+import { HTTP } from './server/constants.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -92,7 +93,7 @@ app.use((req, res) => {
  * @param {Function} _next - Express next function (required for Express to recognize as error handler)
  */
 app.use((err, req, res, _next) => {
-  const statusCode = err.statusCode || 500;
+  const statusCode = err.statusCode || HTTP.INTERNAL_SERVER_ERROR;
   const message = err.isOperational ? err.message : 'An unexpected error occurred';
 
   logger.error({

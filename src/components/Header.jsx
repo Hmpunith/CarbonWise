@@ -20,14 +20,14 @@ import { trackEvent } from '../firebase.js';
  * @param {string} props.statusMessage - Live status message announced to screen readers.
  * @returns {JSX.Element}
  */
-const Header = ({ user, onSignIn, onSignOut, statusMessage }) => {
+const Header = ({ user = null, onSignIn, onSignOut, statusMessage = '' }) => {
   const handleAuthClick = useCallback(() => {
     if (user) {
       trackEvent('header_sign_out_click');
-      onSignOut();
+      if (typeof onSignOut === 'function') onSignOut();
     } else {
       trackEvent('header_sign_in_click');
-      onSignIn();
+      if (typeof onSignIn === 'function') onSignIn();
     }
   }, [user, onSignIn, onSignOut]);
 

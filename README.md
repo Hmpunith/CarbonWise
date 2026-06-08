@@ -1,220 +1,182 @@
-# CarbonWise
+# 🌿 CarbonWise — Carbon Footprint Awareness Platform
 
-**AI-powered carbon footprint awareness platform.** Understand, track, and reduce your carbon footprint through personalized insights powered by Google Gemini AI.
+> **Challenge 3**: Design a solution that helps individuals **understand**, **track**, and **reduce** their carbon footprint through **simple actions** and **personalized insights**.
 
-**Live Demo:** [carbonwise-802059347820.us-central1.run.app](https://carbonwise-802059347820.us-central1.run.app)
+[![Built with Google Cloud](https://img.shields.io/badge/Built%20with-Google%20Cloud-4285F4?logo=google-cloud)](https://cloud.google.com)
+[![Powered by Gemini](https://img.shields.io/badge/Powered%20by-Gemini%20AI-8E75B2?logo=google)](https://ai.google.dev)
+[![Tests](https://img.shields.io/badge/Tests-111%20Passed-10B981)]()
+[![WCAG AA](https://img.shields.io/badge/Accessibility-WCAG%20AA-059669)]()
 
----
+## 🎯 Problem Statement Alignment
 
-## Problem Statement Alignment
+CarbonWise directly addresses every aspect of the challenge:
 
-> *Design a solution that helps individuals understand, track, and reduce their carbon footprint through simple actions and personalized insights.*
+| Challenge Requirement | CarbonWise Feature | Implementation |
+|---|---|---|
+| **Understand** carbon footprint | 🏠 Dashboard with educational facts, global comparisons, daily carbon budget visualization | `Dashboard.jsx` — rotating facts carousel, India/global average comparisons, impact level badges |
+| **Track** carbon footprint | 📊 Activity Tracker with Firestore persistence | `Tracker.jsx` — quick-add buttons, custom logging, timeline history, category breakdown |
+| **Reduce** carbon footprint | 🌱 AI-powered Eco-Actions with difficulty levels | `Actions.jsx` — 6 actions per category, Easy/Medium/Committed tiers, annual CO₂ savings |
+| **Simple actions** | 🧮 Natural-language Calculator + one-click quick-adds | `Calculator.jsx` — describe activities in plain English, get instant AI estimates |
+| **Personalized insights** | 💡 AI-generated insights from tracked data | `Insights.jsx` — pattern analysis, top sources, weekly trends, comparison to averages |
 
-Climate change is the defining challenge of our generation, yet most people have no idea how much carbon their daily activities produce. CarbonWise bridges this awareness gap with four core features:
-
-| Feature | What it does |
-|---|---|
-| **Carbon Calculator** | Describe activities in natural language → get instant AI-powered CO₂ estimates with breakdowns |
-| **Activity Tracker** | Log daily activities to Firestore → build a personal carbon profile over time |
-| **Eco Actions** | Browse category-filtered reduction actions with difficulty levels and annual savings |
-| **Personalized Insights** | AI analyzes your tracked data → delivers prioritized recommendations and trends |
-
----
-
-## Architecture
+## 🏗️ Architecture
 
 ```mermaid
-graph TB
-    subgraph Client
-        SPA["React SPA<br/>(Vite)"]
+graph TD
+    subgraph "Client — React SPA"
+        UI["🖥️ React + Vite"] --> Dashboard["🏠 Dashboard<br/>(Understand)"]
+        UI --> Calculator["🧮 Calculator<br/>(Understand)"]
+        UI --> Tracker["📊 Tracker<br/>(Track)"]
+        UI --> Actions["🌱 Actions<br/>(Reduce)"]
+        UI --> Insights["💡 Insights<br/>(Personalized)"]
     end
 
-    subgraph Firebase
-        Firestore["Cloud Firestore"]
-        Analytics["Firebase Analytics"]
-        Auth["Firebase Auth"]
-        Perf["Firebase Performance"]
+    subgraph "Firebase Services"
+        UI -->|Auth| FA["🔐 Firebase Auth"]
+        UI -->|Persistence| FS[("📄 Firestore")]
+        UI -->|Events| FAN["📈 Firebase Analytics"]
+        UI -->|Monitoring| FP["⚡ Firebase Performance"]
     end
 
-    subgraph Google Cloud
-        CloudRun["Cloud Run"]
-        API["Express 5 API"]
-        Logging["Cloud Logging"]
-        GCS["Cloud Storage"]
-        BQ["BigQuery"]
-        SecretMgr["Secret Manager"]
-        ErrorRpt["Error Reporting"]
+    subgraph "Express API Server"
+        API["🖧 Express 5"] -->|AI| Gemini["🤖 Gemini 2.5 Flash"]
+        API -->|Logs| CL["📋 Cloud Logging"]
+        API -->|Errors| CER["🚨 Error Reporting"]
+        API -->|Analytics| BQ[("📊 BigQuery")]
+        API -->|Secrets| SM["🔑 Secret Manager"]
+        API -->|Assets| GCS["📦 Cloud Storage"]
     end
 
-    subgraph AI
-        Gemini["Gemini 2.5 Flash<br/>+ 2.0 Flash fallback"]
+    UI -->|REST API| API
+    UI -->|Typography| GF["🔤 Google Fonts"]
+    
+    subgraph "Deployment"
+        CR["☁️ Cloud Run"] --> API
     end
-
-    SPA --> Firestore
-    SPA --> Analytics
-    SPA --> Auth
-    SPA --> Perf
-    SPA -->|API calls| CloudRun
-    CloudRun --> API
-    API --> Logging
-    API --> GCS
-    API --> BQ
-    API --> SecretMgr
-    API --> ErrorRpt
-    API -->|AI inference| Gemini
 ```
 
----
+## 🔧 Google Cloud Services Integration (12 Services)
 
-## Google Services Integration (12 Services)
+### Server-Side (7 Services)
+| # | Service | SDK | Purpose |
+|---|---------|-----|---------|
+| 1 | **Gemini 2.5 Flash** | `@google/generative-ai` | AI carbon calculations, insights, and action recommendations |
+| 2 | **Cloud Logging** | `@google-cloud/logging` | Structured server observability and distributed tracing |
+| 3 | **Cloud Storage** | `@google-cloud/storage` | Analytics data export and asset management |
+| 4 | **BigQuery** | `@google-cloud/bigquery` | Carbon metrics data warehouse and aggregation |
+| 5 | **Secret Manager** | `@google-cloud/secret-manager` | Secure API key and credential management |
+| 6 | **Error Reporting** | `@google-cloud/error-reporting` | Production error tracking with automatic alerting |
+| 7 | **Cloud Run** | Deployment | Serverless, auto-scaling container deployment |
 
-| # | Service | Category | Purpose |
-|---|---------|----------|---------|
-| 1 | **Gemini 2.5 Flash** | AI/ML | Carbon calculations, insights, and action recommendations |
-| 2 | **Cloud Logging** | Observability | Structured production log management via Pino |
-| 3 | **Cloud Storage** | Storage | Analytics data export and asset management |
-| 4 | **BigQuery** | Analytics | Carbon metrics data warehouse with SQL queries |
-| 5 | **Secret Manager** | Security | Secure API key and credential management |
-| 6 | **Error Reporting** | Reliability | Production error tracking and alerting |
-| 7 | **Cloud Firestore** | Database | Activity tracking and user data persistence |
-| 8 | **Firebase Analytics** | Analytics | User engagement and behavior tracking |
-| 9 | **Firebase Auth** | Identity | Google Sign-In authentication |
-| 10 | **Firebase Performance** | Monitoring | Real User Monitoring (RUM) and web vitals |
-| 11 | **Cloud Run** | Compute | Serverless container deployment with auto-scaling |
-| 12 | **Google Fonts** | CDN | Inter typeface delivery via preconnect |
+### Client-Side (5 Services)
+| # | Service | SDK | Purpose |
+|---|---------|-----|---------|
+| 8 | **Firebase Auth** | `firebase/auth` | Google Sign-In with popup authentication |
+| 9 | **Firebase Firestore** | `firebase/firestore` | Real-time activity tracking and persistence |
+| 10 | **Firebase Analytics** | `firebase/analytics` | User engagement and feature usage tracking |
+| 11 | **Firebase Performance** | `firebase/performance` | Real User Monitoring (RUM) metrics |
+| 12 | **Google Fonts** | CDN | Inter typeface for premium typography |
 
----
+## 🛡️ Enterprise Security Stack
 
-## Modular Server Architecture
+- **Helmet.js** — 11 security headers including CSP, HSTS, X-Frame-Options
+- **Content Security Policy** — Whitelists only Firebase, Google APIs, and Google Fonts domains
+- **Cross-Origin-Opener-Policy** — `same-origin-allow-popups` for secure OAuth flows
+- **Permissions-Policy** — Disables camera, microphone, geolocation, FLoC
+- **XSS Sanitization** — All user input sanitized via `xss` library before processing
+- **Zod Schema Validation** — Every AI response validated against strict typed schemas
+- **Rate Limiting** — 20 requests/minute per IP with standard headers
+- **Input Length Limits** — Server-enforced maximum lengths on all text inputs
+- **Request ID Tracing** — UUID v4 correlation IDs on every request for audit trails
+- **Graceful Shutdown** — SIGTERM/SIGINT handling with 10s connection drain timeout
 
-The server uses a **single-responsibility module pattern** — each file has one job, fully documented with JSDoc.
+## 📂 Modular Server Architecture
 
 ```
 server/
-├── config.js          # Centralized configuration with env validation
+├── config.js          # Centralized env-validated configuration
 ├── constants.js       # HTTP codes, error codes, cache prefixes
-├── errors.js          # Custom error hierarchy (AppError → ValidationError, AIServiceError, etc.)
-├── logger.js          # Pino structured logger (pino-pretty in dev, JSON in prod)
-├── middleware.js       # Helmet CSP, CORS, rate limiting, XSS sanitization, request IDs
-├── cache.js           # In-memory response cache with MD5 key generation
-├── googleServices.js  # All 6 server-side Google Cloud service integrations
-├── schemas.js         # Zod validation schemas for AI response integrity
-├── prompts.js         # Gemini system instruction templates
-└── routes.js          # API route handlers with dual-model fallback
+├── errors.js          # 5-class error hierarchy (AppError → ValidationError, AIServiceError, etc.)
+├── logger.js          # Pino structured JSON logger (pino-pretty in dev)
+├── middleware.js       # Security headers, CORS, compression, XSS, rate limiting
+├── cache.js           # MD5-keyed in-memory response cache
+├── googleServices.js  # All 6 GCP SDK integrations
+├── schemas.js         # Zod validation schemas for AI responses
+├── prompts.js         # Gemini system instructions (calculator, insights, actions)
+└── routes.js          # API route handlers with caching and validation
 ```
 
-**Key patterns:**
-- Centralized error handling with custom error classes
-- AI model fallback: tries Gemini 2.5 Flash → falls back to 2.0 Flash on 503/429
-- MD5-based response caching to minimize API calls
-- Zod schema validation on every AI response
-- Graceful shutdown with SIGTERM/SIGINT handlers
+## ♿ Accessibility (WCAG AA)
 
----
+- Skip navigation link (`#main-content`)
+- Semantic landmarks: `<header>`, `<nav>`, `<main>`, `<footer>`
+- WAI-ARIA tab widget: `role="tablist"`, `role="tab"`, `role="tabpanel"`
+- Keyboard navigation: Arrow keys, Home/End for tab switching
+- Live region announcer: `role="status"` with `aria-live="polite"`
+- Form validation: `aria-invalid`, `aria-describedby`, `aria-required`
+- Loading states: `aria-busy="true"` on panels during data fetching
+- Touch targets: Minimum 44×44px on all interactive elements
+- Color contrast: AAA-compliant text/background ratios
+- Reduced motion: `@media (prefers-reduced-motion: reduce)`
+- High contrast: `@media (prefers-contrast: high)`
+- Screen reader text: `.sr-only` class for visually hidden content
 
-## Security
-
-| Layer | Implementation |
-|---|---|
-| HTTP Headers | Helmet.js with strict Content Security Policy |
-| Permissions | Permissions-Policy restricts camera, microphone, geolocation |
-| CORS | Configurable origin whitelist |
-| Rate Limiting | 20 req/min per IP via express-rate-limit |
-| Input Sanitization | XSS filtering on all request bodies |
-| Schema Validation | Zod validation on all AI responses |
-| Request Tracing | UUID v4 on every request via X-Request-Id header |
-| Input Limits | Configurable max lengths prevent abuse |
-| Content Safety | Gemini safety filters for user input |
-| Container | Non-root Docker user, multi-stage build |
-
----
-
-## Accessibility (WCAG AA)
-
-- Skip-to-content link for keyboard users
-- Semantic HTML5 landmarks (`<header>`, `<main>`, `<nav>`, `<footer>`)
-- ARIA labels on all interactive elements
-- Keyboard navigation with arrow keys, Home/End
-- Focus management with visible focus indicators
-- Color contrast ratios ≥ 4.5:1
-- Screen reader live regions for dynamic content
-- `prefers-reduced-motion` support
-- `prefers-contrast: high` support
-- Minimum touch targets: 44×44px
-
----
-
-## Testing
-
-**105 tests across 9 test files** — all passing.
-
-| Category | Tests | Coverage |
-|---|---|---|
-| API Endpoints | 12 | Route handlers, error responses, validation |
-| Components | 16 | React Testing Library with jsdom |
-| Accessibility | 12 | ARIA attributes, landmarks, keyboard nav |
-| Security | 10 | CSP headers, rate limiting, XSS sanitization |
-| Schemas | 10 | Zod validation for all AI response schemas |
-| Error Classes | 8 | Custom error hierarchy and status codes |
-| Google Services | 14 | Cloud Logging, Storage, BigQuery, Error Reporting |
-| Edge Cases | 11 | Empty inputs, malformed data, boundary values |
-| Constants | 12 | Tab definitions, categories, impact levels |
+## 🧪 Testing (111 Test Cases)
 
 ```bash
-npm test              # Run all 105 tests
-npx vitest --coverage # Run with coverage report
+npm test
+
+ Test Files  9 passed (9)
+      Tests  111 passed (111)
 ```
 
----
+| Test Suite | Tests | Coverage |
+|------------|-------|---------|
+| `components.test.jsx` | 22 | App rendering, tab switching, Dashboard, Calculator, Toast, ErrorBoundary |
+| `accessibility.test.jsx` | 12 | WCAG landmarks, ARIA attributes, keyboard navigation, skip links |
+| `api.test.js` | 12 | All API endpoints, error handling, input validation |
+| `security.test.js` | 10 | CSP headers, rate limiting (429), XSS sanitization, CORS |
+| `schema.test.js` | 8 | Zod schema validation for all AI response formats |
+| `constants.test.js` | 7 | Tab definitions, categories, impact levels, API endpoints |
+| `edge-cases.test.js` | 11 | Empty inputs, malformed JSON, timeout handling, Unicode |
+| `errors.test.js` | 17 | All 5 error classes, status codes, operational flags |
+| `google-services.test.js` | 12 | All 6 GCP service integrations, graceful degradation |
 
-## Quick Start
+## 🚀 Quick Start
 
 ```bash
-# Clone and install
+# Clone
 git clone https://github.com/Hmpunith/CarbonWise.git
 cd CarbonWise
+
+# Install
 npm install
 
-# Add your Gemini API key
+# Configure
 cp .env.example .env
-# Edit .env → set GEMINI_API_KEY
+# Edit .env with your Gemini API key and Firebase config
 
-# Start development
+# Run (starts both Vite dev server and Express API)
 npm run dev
-# → Frontend: http://localhost:5173
-# → API:      http://localhost:8080
+
+# Test
+npm test
+
+# Build
+npm run build
 ```
 
-| Script | Description |
-|---|---|
-| `npm run dev` | Start Vite + Express concurrently |
-| `npm run build` | Production build |
-| `npm start` | Production server |
-| `npm test` | Run 105 tests |
-| `npm run lint` | ESLint check |
-| `npm run format` | Prettier format |
-
----
-
-## Deployment
-
-Deployed on **Google Cloud Run** with continuous deployment from GitHub.
+## ☁️ Cloud Run Deployment
 
 ```bash
-# Manual deploy
-gcloud builds submit --tag gcr.io/PROJECT_ID/carbonwise
+# Build and deploy
 gcloud run deploy carbonwise \
-  --image gcr.io/PROJECT_ID/carbonwise \
-  --platform managed \
+  --source . \
   --region us-central1 \
   --allow-unauthenticated \
-  --set-env-vars "NODE_ENV=production,GEMINI_API_KEY=your-key"
+  --set-env-vars GEMINI_API_KEY=your-key,NODE_ENV=production
 ```
 
-Docker multi-stage build produces a minimal production image (~150MB).
+## 📄 License
 
----
-
-## License
-
-MIT © 2026 CarbonWise
+MIT License — Built for #BuildwithAI #PromptWarsVirtual #Challenge3

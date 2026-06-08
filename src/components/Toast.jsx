@@ -17,8 +17,9 @@ import { useEffect } from 'react';
  * @param {number} [props.duration=4000] - Duration in ms before auto-closing
  * @returns {JSX.Element}
  */
-const Toast = ({ type = 'info', title, message, onClose, duration = 4000 }) => {
+const Toast = ({ type = 'info', title = '', message = '', onClose, duration = 4000 }) => {
   useEffect(() => {
+    if (typeof onClose !== 'function') return;
     const timer = setTimeout(() => {
       onClose();
     }, duration);
