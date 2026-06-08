@@ -120,11 +120,12 @@ const Calculator = () => {
             id="calc-textarea"
             className="input"
             rows={4}
+            maxLength={1000}
             placeholder="e.g. I drove 30 km to work, had a beef burger for lunch, and left the AC on all day…"
             value={description}
             onChange={(e) => {
               setDescription(e.target.value);
-              if (validationError) setValidationError('');
+              if (validationError) { setValidationError(''); }
             }}
             aria-describedby={`${helpId} ${validationError ? errorId : ''}`}
             aria-invalid={!!validationError}

@@ -60,7 +60,7 @@ export async function writeCloudLog(severity, message, data = {}) {
       { message, ...data, service: 'carbonwise', timestamp: new Date().toISOString() },
     );
     await cloudLog.write(entry);
-  } catch (_err) {
+  } catch {
     // Expected in non-GCP environments
   }
 }
@@ -176,7 +176,7 @@ try {
     reportMode: config.nodeEnv === 'production' ? 'always' : 'never',
     serviceContext: { service: 'carbonwise', version: '1.0.0' },
   });
-} catch (_err) {
+} catch {
   errorReporting = null;
 }
 

@@ -169,6 +169,7 @@ const Tracker = () => {
             id="tracker-desc"
             className="input"
             type="text"
+            maxLength={1000}
             placeholder="e.g. Cycled to the grocery store"
             value={customDesc}
             onChange={(e) => setCustomDesc(e.target.value)}
