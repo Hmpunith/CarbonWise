@@ -19,7 +19,16 @@ const LoadingSpinner = ({ message = 'Loading, please wait' }) => {
       aria-live="polite"
       aria-busy="true"
     >
-      <div className="spinner" aria-hidden="true" />
+      <div className="eco-loader" aria-hidden="true">
+        <div className="eco-loader__leaf-ring">
+          <span className="eco-loader__leaf">🍃</span>
+        </div>
+        <div className="eco-loader__dots">
+          <span className="eco-loader__dot eco-loader__dot--1" />
+          <span className="eco-loader__dot eco-loader__dot--2" />
+          <span className="eco-loader__dot eco-loader__dot--3" />
+        </div>
+      </div>
       <span className="spinner-text">{message}</span>
       <span className="sr-only">{message}</span>
     </div>

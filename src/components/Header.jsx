@@ -33,27 +33,38 @@ const Header = ({ user, onSignIn, onSignOut, statusMessage }) => {
 
   return (
     <header className="header" role="banner">
-      <h1 className="header__title">
-        <span aria-hidden="true">🌿 </span>
-        {APP_META.name}
-      </h1>
+      <div className="header__container glass">
+        <div className="header__brand">
+          <h1 className="header__title">
+            <span aria-hidden="true">🌿 </span>
+            {APP_META.name}
+            <span className="header__version-badge" aria-label={`Version ${APP_META.version}`}>
+              v{APP_META.version}
+            </span>
+          </h1>
 
-      <p className="header__subtitle">{APP_META.description}</p>
+          <p className="header__subtitle">{APP_META.description}</p>
 
-      <div className="header__user">
-        {user && (
-          <span className="header__user-name">
-            Hi, {user.displayName || 'User'}
-          </span>
-        )}
-        <button
-          className="btn btn--small"
-          onClick={handleAuthClick}
-          type="button"
-          aria-label={user ? 'Sign out of your account' : 'Sign in with Google'}
-        >
-          {user ? '🚪 Sign Out' : '🔑 Sign In with Google'}
-        </button>
+          <p className="header__eco-stats" aria-hidden="true">
+            🌱 Powered by Gemini AI • 12 Google Services
+          </p>
+        </div>
+
+        <div className="header__user">
+          {user && (
+            <span className="header__user-name">
+              Hi, {user.displayName || 'User'}
+            </span>
+          )}
+          <button
+            className="btn btn--small"
+            onClick={handleAuthClick}
+            type="button"
+            aria-label={user ? 'Sign out of your account' : 'Sign in with Google'}
+          >
+            {user ? '🚪 Sign Out' : '🔑 Sign In with Google'}
+          </button>
+        </div>
       </div>
 
       {/* Live region for screen reader announcements */}

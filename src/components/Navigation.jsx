@@ -16,9 +16,10 @@ import { trackEvent } from '../firebase.js';
  * @param {Array<{ id: string, label: string, icon: string, ariaLabel: string }>} props.tabs - Tab definitions to render.
  * @param {string} props.activeTab - The `id` of the currently active tab.
  * @param {(tabId: string) => void} props.onTabChange - Callback invoked when a tab is selected.
+ * @param {Object.<string, number>} [props.counts={}] - Optional map of tab id → notification count to display badges.
  * @returns {JSX.Element}
  */
-const Navigation = ({ tabs, activeTab, onTabChange }) => {
+const Navigation = ({ tabs, activeTab, onTabChange, counts = {} }) => {
   const tabRefs = useRef({});
   const { onKeyDown } = useKeyboardNav(tabs, activeTab, onTabChange);
 
@@ -49,6 +50,7 @@ const Navigation = ({ tabs, activeTab, onTabChange }) => {
     >
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
+        const count = counts[tab.id] || 0;
         return (
           <button
             key={tab.id}
@@ -62,14 +64,23 @@ const Navigation = ({ tabs, activeTab, onTabChange }) => {
             aria-selected={isActive}
             aria-controls={`panel-${tab.id}`}
             aria-current={isActive ? 'page' : undefined}
-            aria-label={tab.ariaLabel}
+            aria-label={
+              count > 0
+                ? `${tab.ariaLabel} (${count} items)`
+                : tab.ariaLabel
+            }
             tabIndex={isActive ? 0 : -1}
             onClick={() => handleTabClick(tab.id)}
           >
-            <span className="tab-btn__icon" aria-hidden="true">
+            <span className="tab-btn__icon tab-btn__icon--lg" aria-hidden="true">
               {tab.icon}
             </span>
             <span className="tab-btn__label">{tab.label}</span>
+            {count > 0 && (
+              <span className="tab-btn__count" aria-hidden="true">
+                {count > 99 ? '99+' : count}
+              </span>
+            )}
           </button>
         );
       })}
