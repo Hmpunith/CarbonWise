@@ -75,6 +75,7 @@ const Dashboard = ({ user, onNavigate }) => {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [factIndex, setFactIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -97,10 +98,16 @@ const Dashboard = ({ user, onNavigate }) => {
 
   // Rotate carbon facts every 8 seconds
   useEffect(() => {
+    if (!isAutoPlaying) { return; }
     const interval = setInterval(() => {
       setFactIndex((prev) => (prev + 1) % CARBON_FACTS.length);
     }, 8000);
     return () => clearInterval(interval);
+  }, [factIndex, isAutoPlaying]);
+
+  const handleManualFactChange = useCallback((newIndex) => {
+    setFactIndex(newIndex);
+    setIsAutoPlaying(false);
   }, []);
 
   const handleNavigate = useCallback((tabId) => {
@@ -139,16 +146,36 @@ const Dashboard = ({ user, onNavigate }) => {
             <h3 className="dashboard__fact-title">
               🌍 Did You Know?
             </h3>
-            <p className="dashboard__fact-text">
-              <span aria-hidden="true">{currentFact.icon}</span>
-              {currentFact.fact}
-            </p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-md)' }}>
+              <button 
+                type="button" 
+                className="btn btn--ghost" 
+                style={{ padding: 'var(--space-xs)', minWidth: 'auto' }}
+                onClick={() => handleManualFactChange((factIndex - 1 + CARBON_FACTS.length) % CARBON_FACTS.length)}
+                aria-label="Previous fact"
+              >
+                ◀
+              </button>
+              <p className="dashboard__fact-text" style={{ flex: 1, margin: 0 }}>
+                <span aria-hidden="true">{currentFact.icon}</span>
+                {currentFact.fact}
+              </p>
+              <button 
+                type="button" 
+                className="btn btn--ghost" 
+                style={{ padding: 'var(--space-xs)', minWidth: 'auto' }}
+                onClick={() => handleManualFactChange((factIndex + 1) % CARBON_FACTS.length)}
+                aria-label="Next fact"
+              >
+                ▶
+              </button>
+            </div>
             <div className="dashboard__fact-dots">
               {CARBON_FACTS.map((_, i) => (
                 <button
                   key={i}
                   type="button"
-                  onClick={() => setFactIndex(i)}
+                  onClick={() => handleManualFactChange(i)}
                   className={`dashboard__fact-dot ${i === factIndex ? 'dashboard__fact-dot--active' : ''}`}
                   aria-label={`Show fact ${i + 1}`}
                 />
