@@ -26,7 +26,7 @@ export const responseCache = new NodeCache({
  * @returns {string} The formatted cache key
  */
 export function generateCacheKey(prefix, input) {
-  const hash = crypto.createHash('md5').update(input.trim().toLowerCase()).digest('hex');
+  const hash = crypto.createHash('sha256').update(input.trim().toLowerCase()).digest('hex');
   return `${prefix}:${hash}`;
 }
 

@@ -18,6 +18,18 @@ import {
 import LoadingSpinner from './LoadingSpinner.jsx';
 
 /**
+ * Formats carbon value to display string.
+ * @param {number|null|undefined} carbonKg
+ * @returns {string}
+ */
+const formatCarbonValue = (carbonKg) => {
+  if (carbonKg === null || carbonKg === undefined) {
+    return '—';
+  }
+  return `${carbonKg >= 0 ? '+' : ''}${carbonKg.toFixed(1)} kg`;
+};
+
+/**
  * Returns the emoji icon for a given category id.
  * @param {string} categoryId
  * @returns {string}
@@ -255,9 +267,7 @@ const Tracker = () => {
                     {entry.description}
                   </span>
                   <span className="timeline-entry__carbon">
-                    {entry.carbonKg !== null && entry.carbonKg !== undefined
-                      ? `${entry.carbonKg >= 0 ? '+' : ''}${entry.carbonKg.toFixed(1)} kg`
-                      : '—'}
+                    {formatCarbonValue(entry.carbonKg)}
                   </span>
                 </div>
                 <span className="timeline-entry__time">

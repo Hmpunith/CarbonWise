@@ -121,6 +121,10 @@ const Dashboard = ({ user, onNavigate }) => {
   const impactLevel = getImpactLevel(totalCarbon);
   const currentFact = CARBON_FACTS[factIndex];
   const goalProgress = Math.min((totalCarbon / DAILY_GOAL_KG) * 100, 100);
+  
+  let meterLevelClass = 'low';
+  if (goalProgress > 80) { meterLevelClass = 'high'; }
+  else if (goalProgress > 50) { meterLevelClass = 'moderate'; }
 
   return (
     <section
@@ -212,7 +216,7 @@ const Dashboard = ({ user, onNavigate }) => {
             </p>
             <div className="carbon-meter" role="progressbar" aria-valuenow={totalCarbon} aria-valuemin={0} aria-valuemax={DAILY_GOAL_KG} aria-label="Daily carbon budget usage">
               <div
-                className={`carbon-meter__fill carbon-meter__fill--${goalProgress > 80 ? 'high' : goalProgress > 50 ? 'moderate' : 'low'}`}
+                className={`carbon-meter__fill carbon-meter__fill--${meterLevelClass}`}
                 style={{ width: `${goalProgress}%` }}
               />
             </div>
