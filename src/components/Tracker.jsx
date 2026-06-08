@@ -66,11 +66,10 @@ const Tracker = () => {
       try {
         const data = await getActivities(30);
         if (!cancelled) setActivities(data);
-      } catch (err) {
-        if (!cancelled) setError('Failed to load activity history.');
-        console.error('[Tracker] getActivities error:', err);
+      } catch (_err) {
+        if (!cancelled) { setError('Failed to load activity history.'); }
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) { setLoading(false); }
       }
     })();
     return () => { cancelled = true; };
@@ -92,9 +91,8 @@ const Tracker = () => {
       });
       const refreshed = await getActivities(30);
       setActivities(refreshed);
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to log activity. Please try again.');
-      console.error('[Tracker] saveActivity error:', err);
     } finally {
       setSaving(false);
     }
@@ -121,9 +119,8 @@ const Tracker = () => {
         setCustomCarbon('');
         const refreshed = await getActivities(30);
         setActivities(refreshed);
-      } catch (err) {
+      } catch (_err) {
         setError('Failed to log activity. Please try again.');
-        console.error('[Tracker] custom save error:', err);
       } finally {
         setSaving(false);
       }
@@ -161,12 +158,12 @@ const Tracker = () => {
       </div>
 
       {/* Custom activity form */}
-      <form onSubmit={handleCustomSubmit} className="card" style={{ marginBottom: 'var(--space-lg)' }}>
-        <h3 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, marginBottom: 'var(--space-md)' }}>
+      <form onSubmit={handleCustomSubmit} className="card card--spaced">
+        <h3 className="heading--form">
           Log Custom Activity
         </h3>
 
-        <div className="form-group" style={{ marginBottom: 'var(--space-sm)' }}>
+        <div className="form-group">
           <label htmlFor="tracker-desc">Description</label>
           <input
             id="tracker-desc"
@@ -179,8 +176,8 @@ const Tracker = () => {
           />
         </div>
 
-        <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
-          <div className="form-group" style={{ flex: 1, minWidth: 140 }}>
+        <div className="form-row">
+          <div className="form-group form-row__field">
             <label htmlFor="tracker-carbon">CO₂ (kg)</label>
             <input
               id="tracker-carbon"
@@ -195,7 +192,7 @@ const Tracker = () => {
             />
           </div>
 
-          <div className="form-group" style={{ flex: 1, minWidth: 140 }}>
+          <div className="form-group form-row__field">
             <label htmlFor="tracker-category">Category</label>
             <select
               id="tracker-category"
@@ -213,7 +210,7 @@ const Tracker = () => {
           </div>
         </div>
 
-        <div style={{ marginTop: 'var(--space-md)' }}>
+        <div className="mt-md">
           <button
             type="submit"
             className="btn btn--primary"

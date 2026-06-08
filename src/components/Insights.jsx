@@ -7,7 +7,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import { API_ENDPOINTS } from '../constants.js';
+import { generateInsights } from '../utils/apiClient.js';
 import { trackEvent, trackInsightViewed, getActivities } from '../firebase.js';
 import LoadingSpinner from './LoadingSpinner.jsx';
 
@@ -49,17 +49,7 @@ const Insights = () => {
         setLoading(false);
         return;
       }
-      const response = await fetch(API_ENDPOINTS.insights, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ trackedData: JSON.stringify(activities) }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = await generateInsights(JSON.stringify(activities));
       setInsights(data);
       trackInsightViewed();
       trackEvent('insights_generated', {
@@ -67,7 +57,6 @@ const Insights = () => {
       });
     } catch (err) {
       setError(err.message || 'Failed to generate insights.');
-      trackEvent('insights_error', { error: err.message });
     } finally {
       setLoading(false);
     }
@@ -88,7 +77,7 @@ const Insights = () => {
 
       {/* Generate button */}
       {!insights && !loading && (
-        <div style={{ textAlign: 'center', padding: 'var(--space-xl) 0' }}>
+        <div className="text-center py-xl">
           <button
             type="button"
             className="btn btn--primary"
@@ -97,7 +86,7 @@ const Insights = () => {
           >
             Generate My Insights
           </button>
-          <p className="input-help" style={{ marginTop: 'var(--space-md)' }}>
+          <p className="input-help mt-md">
             We'll analyse your tracked activities to provide tailored recommendations.
           </p>
         </div>
@@ -108,7 +97,7 @@ const Insights = () => {
 
       {/* Error */}
       {error && (
-        <div className="error-alert" role="alert" style={{ marginBottom: 'var(--space-md)' }}>
+        <div className="error-alert mb-md" role="alert">
           <span aria-hidden="true">❌</span> {error}
         </div>
       )}
@@ -118,20 +107,20 @@ const Insights = () => {
         <>
           {/* Summary */}
           {insights.summary && (
-            <div className="glass glass--elevated" style={{ marginBottom: 'var(--space-lg)' }}>
-              <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, lineHeight: 1.6 }}>
+            <div className="glass glass--elevated card--spaced">
+              <p className="insight-summary-text">
                 {insights.summary}
               </p>
             </div>
           )}
 
           {/* Top source & stats row */}
-          <div className="stats-row" style={{ marginBottom: 'var(--space-lg)' }}>
+          <div className="stats-row card--spaced">
             {insights.topSource && (
               <div className="stat-box">
                 <div className="stat-box__value">{insights.topSource.icon || '🏭'}</div>
                 <div className="stat-box__label">Top Source</div>
-                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', marginTop: 'var(--space-xs)' }}>
+                <div className="stat-box__detail">
                   {insights.topSource.label || insights.topSource}
                 </div>
               </div>
@@ -143,7 +132,7 @@ const Insights = () => {
                   {insights.weeklyTrend >= 0 ? '📈' : '📉'} {Math.abs(insights.weeklyTrend)}%
                 </div>
                 <div className="stat-box__label">Weekly Trend</div>
-                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', marginTop: 'var(--space-xs)' }}>
+                <div className="stat-box__detail">
                   {insights.weeklyTrend >= 0 ? 'Increased' : 'Decreased'} from last week
                 </div>
               </div>
@@ -156,7 +145,7 @@ const Insights = () => {
                   {insights.comparisonToAverage}%
                 </div>
                 <div className="stat-box__label">vs Average</div>
-                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', marginTop: 'var(--space-xs)' }}>
+                <div className="stat-box__detail">
                   {insights.comparisonToAverage > 0
                     ? 'Above average — room to improve'
                     : 'Below average — great job!'}
@@ -195,7 +184,7 @@ const Insights = () => {
           )}
 
           {/* Regenerate button */}
-          <div style={{ textAlign: 'center', marginTop: 'var(--space-xl)' }}>
+          <div className="text-center mt-xl">
             <button
               type="button"
               className="btn"

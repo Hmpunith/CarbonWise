@@ -6,7 +6,8 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { CARBON_CATEGORIES, API_ENDPOINTS } from '../constants.js';
+import { CARBON_CATEGORIES } from '../constants.js';
+import { fetchActions as fetchActionsApi } from '../utils/apiClient.js';
 import { trackEvent } from '../firebase.js';
 import LoadingSpinner from './LoadingSpinner.jsx';
 
@@ -25,23 +26,13 @@ const Actions = () => {
    * Fetches actions for the given category from the backend.
    * @param {string} category
    */
-  const fetchActions = useCallback(async (category) => {
+  const handleFetchActions = useCallback(async (category) => {
     setLoading(true);
     setError('');
     trackEvent('actions_fetch', { category });
 
     try {
-      const response = await fetch(API_ENDPOINTS.actions, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = await fetchActionsApi(category);
       setActions(data.actions || data || []);
     } catch (err) {
       setError(err.message || 'Failed to load actions.');
@@ -53,7 +44,7 @@ const Actions = () => {
 
   /* Fetch default category on mount */
   useEffect(() => {
-    fetchActions(activeCategory);
+    handleFetchActions(activeCategory);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -65,9 +56,9 @@ const Actions = () => {
     (categoryId) => {
       setActiveCategory(categoryId);
       trackEvent('actions_category_change', { category: categoryId });
-      fetchActions(categoryId);
+      handleFetchActions(categoryId);
     },
-    [fetchActions],
+    [handleFetchActions],
   );
 
   /**

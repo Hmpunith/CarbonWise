@@ -85,7 +85,6 @@ const Dashboard = ({ user, onNavigate }) => {
           setActivities(data);
         }
       } catch (err) {
-        console.error('[Dashboard] Failed to load activities:', err);
       } finally {
         if (!cancelled) {
           setLoading(false);
@@ -135,34 +134,29 @@ const Dashboard = ({ user, onNavigate }) => {
       {!loading && (
         <>
           {/* ── Understand Section ──────────────────────────── */}
-          <div className="glass glass--elevated" style={{ marginBottom: 'var(--space-lg)', padding: 'var(--space-lg)' }}>
-            <h3 style={{ fontSize: 'var(--font-size-base)', fontWeight: 700, marginBottom: 'var(--space-sm)', color: 'var(--color-accent)' }}>
+          <div className="glass glass--elevated dashboard__fact-container">
+            <h3 className="dashboard__fact-title">
               🌍 Did You Know?
             </h3>
-            <p style={{ fontSize: 'var(--font-size-base)', lineHeight: 1.7, minHeight: '3em' }}>
-              <span aria-hidden="true" style={{ marginRight: 'var(--space-sm)' }}>{currentFact.icon}</span>
+            <p className="dashboard__fact-text">
+              <span aria-hidden="true">{currentFact.icon}</span>
               {currentFact.fact}
             </p>
-            <div style={{ display: 'flex', gap: 'var(--space-xs)', marginTop: 'var(--space-sm)', justifyContent: 'center' }}>
+            <div className="dashboard__fact-dots">
               {CARBON_FACTS.map((_, i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => setFactIndex(i)}
-                  className="btn--ghost"
+                  className={`dashboard__fact-dot ${i === factIndex ? 'dashboard__fact-dot--active' : ''}`}
                   aria-label={`Show fact ${i + 1}`}
-                  style={{
-                    width: 8, height: 8, borderRadius: '50%', padding: 0, minHeight: 'auto', minWidth: 'auto', border: 'none', cursor: 'pointer',
-                    background: i === factIndex ? 'var(--color-accent)' : 'var(--color-border)',
-                    transition: 'background var(--transition-fast)',
-                  }}
                 />
               ))}
             </div>
           </div>
 
           {/* ── Track Section: Stats Overview ───────────────── */}
-          <div className="stats-row" style={{ marginBottom: 'var(--space-lg)' }}>
+          <div className="stats-row card--spaced">
             <div className="stat-box">
               <div className="stat-box__value">{activities.length}</div>
               <div className="stat-box__label">Activities Tracked</div>
@@ -180,11 +174,11 @@ const Dashboard = ({ user, onNavigate }) => {
           </div>
 
           {/* ── Carbon Budget Progress ──────────────────────── */}
-          <div className="card" style={{ marginBottom: 'var(--space-lg)' }}>
-            <h3 style={{ fontSize: 'var(--font-size-base)', fontWeight: 700, marginBottom: 'var(--space-md)' }}>
+          <div className="card card--spaced">
+            <h3 className="dashboard__section-heading">
               📊 Daily Carbon Budget
             </h3>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', marginBottom: 'var(--space-sm)' }}>
+            <p className="dashboard__budget-label">
               Recommended daily budget: {DAILY_GOAL_KG} kg CO₂ (based on global average of {GLOBAL_AVG_ANNUAL_KG / 1000} tonnes/year)
             </p>
             <div className="carbon-meter" role="progressbar" aria-valuenow={totalCarbon} aria-valuemin={0} aria-valuemax={DAILY_GOAL_KG} aria-label="Daily carbon budget usage">
@@ -193,7 +187,7 @@ const Dashboard = ({ user, onNavigate }) => {
                 style={{ width: `${goalProgress}%` }}
               />
             </div>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', marginTop: 'var(--space-sm)', textAlign: 'center' }}>
+            <p className="dashboard__budget-status">
               {totalCarbon.toFixed(1)} / {DAILY_GOAL_KG} kg CO₂
               {goalProgress < 50 && ' — Great job staying under budget! 🌟'}
               {goalProgress >= 50 && goalProgress < 80 && ' — Getting close to your budget.'}
@@ -203,8 +197,8 @@ const Dashboard = ({ user, onNavigate }) => {
 
           {/* ── Category Breakdown ─────────────────────────── */}
           {Object.keys(categoryTotals).length > 0 && (
-            <div className="card" style={{ marginBottom: 'var(--space-lg)' }}>
-              <h3 style={{ fontSize: 'var(--font-size-base)', fontWeight: 700, marginBottom: 'var(--space-md)' }}>
+            <div className="card card--spaced">
+              <h3 className="dashboard__section-heading">
                 📈 Carbon by Category
               </h3>
               <div className="breakdown-list">
@@ -228,14 +222,14 @@ const Dashboard = ({ user, onNavigate }) => {
           )}
 
           {/* ── Reduce Section: Quick Actions ──────────────── */}
-          <div className="card" style={{ marginBottom: 'var(--space-lg)' }}>
-            <h3 style={{ fontSize: 'var(--font-size-base)', fontWeight: 700, marginBottom: 'var(--space-md)' }}>
+          <div className="card card--spaced">
+            <h3 className="dashboard__section-heading">
               🌱 Take Action to Reduce Your Footprint
             </h3>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', marginBottom: 'var(--space-md)' }}>
+            <p className="dashboard__section-desc">
               Every small action counts. Navigate to these sections to start reducing your impact:
             </p>
-            <div style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap' }}>
+            <div className="dashboard__actions-row">
               <button type="button" className="btn btn--primary" onClick={() => handleNavigate('calculator')} aria-label="Go to Carbon Calculator">
                 🧮 Calculate Footprint
               </button>
@@ -252,8 +246,8 @@ const Dashboard = ({ user, onNavigate }) => {
           </div>
 
           {/* ── Comparison Stats ───────────────────────────── */}
-          <div className="glass" style={{ marginBottom: 'var(--space-lg)', padding: 'var(--space-lg)' }}>
-            <h3 style={{ fontSize: 'var(--font-size-base)', fontWeight: 700, marginBottom: 'var(--space-md)' }}>
+          <div className="glass glass--spaced">
+            <h3 className="dashboard__section-heading">
               🌏 How You Compare
             </h3>
             <div className="stats-row">

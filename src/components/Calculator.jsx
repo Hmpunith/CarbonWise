@@ -6,7 +6,8 @@
  */
 
 import { useState, useCallback, useRef } from 'react';
-import { CARBON_CATEGORIES, API_ENDPOINTS, getImpactLevel } from '../constants.js';
+import { CARBON_CATEGORIES, getImpactLevel } from '../constants.js';
+import { calculateCarbon } from '../utils/apiClient.js';
 import { trackEvent, trackCalculation } from '../firebase.js';
 import LoadingSpinner from './LoadingSpinner.jsx';
 
@@ -61,20 +62,7 @@ const Calculator = () => {
       trackEvent('calculate_submit', { category: selectedCategory });
 
       try {
-        const response = await fetch(API_ENDPOINTS.calculate, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            activity: description.trim(),
-            category: selectedCategory || undefined,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await calculateCarbon(description, selectedCategory);
         setResult(data);
         trackCalculation(selectedCategory || 'general');
         trackEvent('calculate_success', {
@@ -151,7 +139,7 @@ const Calculator = () => {
           )}
         </div>
 
-        <div style={{ marginTop: 'var(--space-md)' }}>
+        <div className="mt-md">
           <button
             type="submit"
             className="btn btn--primary"
@@ -168,14 +156,14 @@ const Calculator = () => {
 
       {/* Error */}
       {error && (
-        <div className="error-alert" role="alert" style={{ marginTop: 'var(--space-md)' }}>
+        <div className="error-alert mt-md" role="alert">
           <span aria-hidden="true">❌</span> {error}
         </div>
       )}
 
       {/* Results */}
       {result && !loading && (
-        <div className="card" style={{ marginTop: 'var(--space-lg)' }}>
+        <div className="card mt-lg">
           {/* Total carbon */}
           <div className="carbon-result">
             <div className="carbon-result__value">
@@ -184,7 +172,7 @@ const Calculator = () => {
             </div>
             <p className="carbon-result__label">Estimated carbon footprint</p>
             {impactLevel && (
-              <span className={`badge badge--${impactLevel.className}`} style={{ marginTop: '0.5rem', display: 'inline-block' }}>
+              <span className={`badge badge--${impactLevel.className} mt-sm`}>
                 {impactLevel.label}
               </span>
             )}
@@ -202,8 +190,8 @@ const Calculator = () => {
 
           {/* Breakdown */}
           {result.breakdown && result.breakdown.length > 0 && (
-            <div style={{ marginTop: 'var(--space-lg)' }}>
-              <h3 className="section-title" style={{ fontSize: 'var(--font-size-lg)' }}>Breakdown</h3>
+            <div className="mt-lg">
+              <h3 className="section-title heading--sm">Breakdown</h3>
               <div className="breakdown-list">
                 {result.breakdown.map((item, i) => (
                   <div className="breakdown-item" key={i}>
@@ -222,8 +210,8 @@ const Calculator = () => {
 
           {/* Equivalents */}
           {result.equivalents && result.equivalents.length > 0 && (
-            <div style={{ marginTop: 'var(--space-lg)' }}>
-              <h3 className="section-title" style={{ fontSize: 'var(--font-size-lg)' }}>That's equivalent to…</h3>
+            <div className="mt-lg">
+              <h3 className="section-title heading--sm">That's equivalent to…</h3>
               <div className="equivalents">
                 {result.equivalents.map((eq, i) => (
                   <div className="equivalent-item" key={i}>
@@ -237,8 +225,8 @@ const Calculator = () => {
 
           {/* Tips */}
           {result.tips && result.tips.length > 0 && (
-            <div style={{ marginTop: 'var(--space-lg)' }}>
-              <h3 className="section-title" style={{ fontSize: 'var(--font-size-lg)' }}>Tips to Reduce</h3>
+            <div className="mt-lg">
+              <h3 className="section-title heading--sm">Tips to Reduce</h3>
               <div className="tips-list">
                 {result.tips.map((tip, i) => (
                   <div className="tip-item" key={i}>
