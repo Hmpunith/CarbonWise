@@ -30,7 +30,7 @@ const useKeyboardNav = (tabs, activeTab, onTabChange) => {
   const onKeyDown = useCallback(
     (event) => {
       const currentIndex = tabs.findIndex((tab) => tab.id === activeTab);
-      if (currentIndex === -1) return;
+      if (currentIndex === -1) {return;}
 
       let nextIndex;
 

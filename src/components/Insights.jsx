@@ -18,8 +18,8 @@ import LoadingSpinner from './LoadingSpinner.jsx';
  */
 const getPriorityClass = (priority) => {
   const p = (priority || '').toLowerCase();
-  if (p === 'high') return 'priority--high';
-  if (p === 'medium') return 'priority--medium';
+  if (p === 'high') {return 'priority--high';}
+  if (p === 'medium') {return 'priority--medium';}
   return 'priority--low';
 };
 
@@ -126,7 +126,7 @@ const Insights = () => {
               </div>
             )}
 
-            {insights.weeklyTrend != null && (
+            {insights.weeklyTrend !== null && insights.weeklyTrend !== undefined && (
               <div className="stat-box">
                 <div className="stat-box__value">
                   {insights.weeklyTrend >= 0 ? '📈' : '📉'} {Math.abs(insights.weeklyTrend)}%
@@ -138,7 +138,7 @@ const Insights = () => {
               </div>
             )}
 
-            {insights.comparisonToAverage != null && (
+            {insights.comparisonToAverage !== null && insights.comparisonToAverage !== undefined && (
               <div className="stat-box">
                 <div className="stat-box__value">
                   {insights.comparisonToAverage > 0 ? '+' : ''}

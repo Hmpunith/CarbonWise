@@ -84,7 +84,8 @@ const Dashboard = ({ user, onNavigate }) => {
         if (!cancelled) {
           setActivities(data);
         }
-      } catch (err) {
+      } catch {
+        // Activities unavailable — show empty dashboard gracefully
       } finally {
         if (!cancelled) {
           setLoading(false);
@@ -204,7 +205,7 @@ const Dashboard = ({ user, onNavigate }) => {
               <div className="breakdown-list">
                 {CARBON_CATEGORIES.map((cat) => {
                   const catTotal = categoryTotals[cat.id] || 0;
-                  if (catTotal === 0) return null;
+                  if (catTotal === 0) {return null;}
                   const percentage = totalCarbon > 0 ? ((catTotal / totalCarbon) * 100).toFixed(0) : 0;
                   return (
                     <div className="breakdown-item" key={cat.id}>

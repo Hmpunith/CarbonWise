@@ -31,7 +31,7 @@ const Navigation = ({ tabs = [], activeTab = '', onTabChange, counts = {} }) => 
   const handleTabClick = useCallback(
     (tabId) => {
       trackEvent('tab_change', { tab: tabId });
-      if (typeof onTabChange === 'function') onTabChange(tabId);
+      if (typeof onTabChange === 'function') {onTabChange(tabId);}
     },
     [onTabChange],
   );
@@ -39,7 +39,7 @@ const Navigation = ({ tabs = [], activeTab = '', onTabChange, counts = {} }) => 
   /* Move DOM focus to the active tab when it changes */
   useEffect(() => {
     const el = tabRefs.current[activeTab];
-    if (el) el.focus();
+    if (el) {el.focus();}
   }, [activeTab]);
 
   return (

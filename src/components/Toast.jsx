@@ -19,7 +19,7 @@ import { useEffect } from 'react';
  */
 const Toast = ({ type = 'info', title = '', message = '', onClose, duration = 4000 }) => {
   useEffect(() => {
-    if (typeof onClose !== 'function') return;
+    if (typeof onClose !== 'function') {return;}
     const timer = setTimeout(() => {
       onClose();
     }, duration);

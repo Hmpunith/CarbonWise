@@ -14,7 +14,6 @@ import {
   saveActivity,
   getActivities,
   trackEvent,
-  auth,
 } from '../firebase.js';
 import LoadingSpinner from './LoadingSpinner.jsx';
 
@@ -34,7 +33,7 @@ const getCategoryIcon = (categoryId) => {
  * @returns {string}
  */
 const formatTimestamp = (ts) => {
-  if (!ts) return 'Just now';
+  if (!ts) {return 'Just now';}
   const date = ts.toDate ? ts.toDate() : new Date(ts);
   return date.toLocaleDateString(undefined, {
     month: 'short',
@@ -65,8 +64,8 @@ const Tracker = () => {
     (async () => {
       try {
         const data = await getActivities(30);
-        if (!cancelled) setActivities(data);
-      } catch (_err) {
+        if (!cancelled) {setActivities(data);}
+      } catch {
         if (!cancelled) { setError('Failed to load activity history.'); }
       } finally {
         if (!cancelled) { setLoading(false); }
@@ -91,7 +90,7 @@ const Tracker = () => {
       });
       const refreshed = await getActivities(30);
       setActivities(refreshed);
-    } catch (_err) {
+    } catch {
       setError('Failed to log activity. Please try again.');
     } finally {
       setSaving(false);
@@ -105,7 +104,7 @@ const Tracker = () => {
   const handleCustomSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-      if (!customDesc.trim()) return;
+      if (!customDesc.trim()) {return;}
       setSaving(true);
       setError('');
       trackEvent('custom_activity_logged', { category: customCategory });
@@ -119,7 +118,7 @@ const Tracker = () => {
         setCustomCarbon('');
         const refreshed = await getActivities(30);
         setActivities(refreshed);
-      } catch (_err) {
+      } catch {
         setError('Failed to log activity. Please try again.');
       } finally {
         setSaving(false);
@@ -256,7 +255,7 @@ const Tracker = () => {
                     {entry.description}
                   </span>
                   <span className="timeline-entry__carbon">
-                    {entry.carbonKg != null
+                    {entry.carbonKg !== null && entry.carbonKg !== undefined
                       ? `${entry.carbonKg >= 0 ? '+' : ''}${entry.carbonKg.toFixed(1)} kg`
                       : '—'}
                   </span>

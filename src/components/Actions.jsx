@@ -45,8 +45,7 @@ const Actions = () => {
   /* Fetch default category on mount */
   useEffect(() => {
     handleFetchActions(activeCategory);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []);  
 
   /**
    * Handles category filter button click.
@@ -68,8 +67,8 @@ const Actions = () => {
    */
   const getDifficultyClass = (difficulty) => {
     const d = (difficulty || '').toLowerCase();
-    if (d === 'easy') return 'difficulty--easy';
-    if (d === 'medium') return 'difficulty--medium';
+    if (d === 'easy') {return 'difficulty--easy';}
+    if (d === 'medium') {return 'difficulty--medium';}
     return 'difficulty--committed';
   };
 

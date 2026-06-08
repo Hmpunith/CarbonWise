@@ -3,9 +3,15 @@ import js from '@eslint/js';
 export default [
   js.configs.recommended,
   {
+    files: ['**/*.js', '**/*.jsx'],
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: 'module',
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
       globals: {
         console: 'readonly',
         process: 'readonly',
@@ -22,6 +28,7 @@ export default [
         window: 'readonly',
         navigator: 'readonly',
         HTMLElement: 'readonly',
+        crypto: 'readonly',
       },
     },
     rules: {
@@ -29,7 +36,7 @@ export default [
       'prefer-const': 'error',
       'eqeqeq': ['error', 'always'],
       'curly': ['error', 'all'],
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^React$' }],
       'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
   },

@@ -24,10 +24,10 @@ const Header = ({ user = null, onSignIn, onSignOut, statusMessage = '' }) => {
   const handleAuthClick = useCallback(() => {
     if (user) {
       trackEvent('header_sign_out_click');
-      if (typeof onSignOut === 'function') onSignOut();
+      if (typeof onSignOut === 'function') {onSignOut();}
     } else {
       trackEvent('header_sign_in_click');
-      if (typeof onSignIn === 'function') onSignIn();
+      if (typeof onSignIn === 'function') {onSignIn();}
     }
   }, [user, onSignIn, onSignOut]);
 
