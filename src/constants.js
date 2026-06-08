@@ -307,6 +307,6 @@ export const DEFAULT_ACTIVITIES = [
 export const APP_META = {
   name: 'CarbonWise',
   version: '1.0.0',
-  description: 'AI-powered carbon footprint awareness platform',
+  description: 'AI platform to help you understand, track, and reduce your carbon footprint.',
   author: 'CarbonWise Team',
 };
