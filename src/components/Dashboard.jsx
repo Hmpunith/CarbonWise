@@ -10,6 +10,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { getActivities, trackEvent } from '../firebase.js';
 import { CARBON_CATEGORIES, getImpactLevel, APP_META } from '../constants.js';
 import LoadingSpinner from './LoadingSpinner.jsx';
+import PropTypes from 'prop-types';
 
 /**
  * Calculates category-level carbon totals from an activities array.
@@ -309,6 +310,14 @@ const Dashboard = ({ user, onNavigate }) => {
       )}
     </section>
   );
+};
+
+Dashboard.propTypes = {
+  user: PropTypes.shape({
+    displayName: PropTypes.string,
+    uid: PropTypes.string,
+  }),
+  onNavigate: PropTypes.func.isRequired,
 };
 
 export default Dashboard;

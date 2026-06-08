@@ -6,6 +6,7 @@
  */
 
 import { useCallback, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import useKeyboardNav from '../hooks/useKeyboardNav.js';
 import { trackEvent } from '../firebase.js';
 
@@ -87,6 +88,19 @@ const Navigation = ({ tabs = [], activeTab = '', onTabChange, counts = {} }) => 
       })}
     </div>
   );
+};
+
+Navigation.propTypes = {
+  tabs: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      icon: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  activeTab: PropTypes.string.isRequired,
+  onTabChange: PropTypes.func.isRequired,
+  counts: PropTypes.object,
 };
 
 export default Navigation;

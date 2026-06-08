@@ -6,6 +6,7 @@
  */
 
 import { useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { APP_META } from '../constants.js';
 import { trackEvent } from '../firebase.js';
 
@@ -58,6 +59,15 @@ const Header = ({ user = null, onSignIn, onSignOut, statusMessage = '' }) => {
       </span>
     </header>
   );
+};
+
+Header.propTypes = {
+  user: PropTypes.shape({
+    displayName: PropTypes.string,
+  }),
+  onSignIn: PropTypes.func.isRequired,
+  onSignOut: PropTypes.func.isRequired,
+  statusMessage: PropTypes.string,
 };
 
 export default Header;

@@ -5,6 +5,7 @@
  */
 
 import { useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Toast component.
@@ -32,6 +33,14 @@ const Toast = ({ type = 'info', title = '', message = '', onClose, duration = 40
       <div className="toast__message">{message}</div>
     </div>
   );
+};
+
+Toast.propTypes = {
+  type: PropTypes.oneOf(['success', 'error', 'info', 'warning']),
+  title: PropTypes.string,
+  message: PropTypes.string,
+  onClose: PropTypes.func.isRequired,
+  duration: PropTypes.number,
 };
 
 export default Toast;

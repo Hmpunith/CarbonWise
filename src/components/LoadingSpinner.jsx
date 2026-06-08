@@ -4,6 +4,8 @@
  * @module components/LoadingSpinner
  */
 
+import PropTypes from 'prop-types';
+
 /**
  * Accessible loading indicator with optional custom message.
  *
@@ -34,6 +36,10 @@ const LoadingSpinner = ({ message = 'Loading, please wait' }) => {
       <span className="sr-only">{safeMessage}</span>
     </div>
   );
+};
+
+LoadingSpinner.propTypes = {
+  message: PropTypes.string,
 };
 
 export default LoadingSpinner;
